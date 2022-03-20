@@ -6,11 +6,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { RestaurantModule } from './restaurants/restaurants.module';
+import { Restaurant } from './restaurants/entities/restaurant.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal:true,
-      envFilePath: process.env.NODE_ENV === "dev" ? ".dev.env" : ".test.env",
+      envFilePath: process.env.NODE_ENV === "dev" ? ".env.dev" : ".env.test",
       ignoreEnvFile:process.env.NODE_ENV === "prod",
       validationSchema: Joi.object({
         NODE_ENV:Joi.string().valid('dev', 'prod').required(),
@@ -28,8 +29,9 @@ import { RestaurantModule } from './restaurants/restaurants.module';
       username: process.env.DB_USERNAME, //'postgres',
       password: process.env.DB_PASSWORD, //'090209',
       database: process.env.DB_NAME, //nuber-eats',
-      synchronize: true,
-      logging: true,
+      synchronize: process.env.NODE_ENV !== "prod", //prod환경이 아니면 true
+      logging: process.env.NODE_ENV !== "prod", //true면 DB에서 돌아가는 쿼리문들 로그 확인 가능
+      entities:[Restaurant] //TypeOrmModule에서 Restaurant라고 하는 entity를 가지고 있다. Restaurant은 DB가 된다
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({//forRoot는 루트모듈을 설정하는 것
       driver: ApolloDriver,
