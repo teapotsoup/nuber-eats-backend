@@ -7,6 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { RestaurantModule } from './restaurants/restaurants.module';
 import { Restaurant } from './restaurants/entities/restaurant.entity';
+import { UsersModule } from './users/users.module';
+import { CommonModule } from './common/common.module';
+import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,13 +34,14 @@ import { Restaurant } from './restaurants/entities/restaurant.entity';
       database: process.env.DB_NAME, //nuber-eats',
       synchronize: process.env.NODE_ENV !== "prod", //prod환경이 아니면 true
       logging: process.env.NODE_ENV !== "prod", //true면 DB에서 돌아가는 쿼리문들 로그 확인 가능
-      entities:[Restaurant] //TypeOrmModule에서 Restaurant라고 하는 entity를 가지고 있다. Restaurant은 DB가 된다
+      entities:[User] //TypeOrmModule에서 Restaurant라고 하는 entity를 가지고 있다. Restaurant은 DB가 된다
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({//forRoot는 루트모듈을 설정하는 것
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
-    RestaurantModule,
+    UsersModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
